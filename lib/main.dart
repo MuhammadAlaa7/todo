@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeServices().theme, // the getter accessed through an object not a class
 
       debugShowCheckedModeBanner: false,
-      home: AddTaskPage(),
+      home: HomePage(),
     );
   }
 }

@@ -137,33 +137,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      Text('Color', style: titleStyle,),
-                        Row(
-                          children: List.generate(3, (index) =>  InkWell(
-                            onTap: (){
-                                 setState(() {
-                                   selectedColor = index ;
-                                 });
-
-                            },
-                            child:  Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: CircleAvatar(
-                                maxRadius: 18,
-                                child: index == selectedColor ? const Icon(Icons.done, color: Colors.white,): null,
-                                backgroundColor: index == 0 ? primaryClr :
-                                    index == 1 ? orangeClr : pinkClr ,
-                              ),
-                            ),
-                          ), ),
-                        ),
-                    ],
-                  ),
-                  MyButton(label: 'Add Task ', onTap: (){}),
+                  colorColumn(),
+                  MyButton(label: 'Add Task ', onTap: (){
+                    Get.back();
+                  }),
                 ],
               ),
             ),
@@ -174,5 +151,33 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
     );
+  }
+
+  Column colorColumn() {
+    return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    Text('Color', style: titleStyle,),
+                      Row(
+                        children: List.generate(3, (index) =>  GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              selectedColor = index ;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CircleAvatar(
+                              maxRadius: 18,
+                              child: index == selectedColor ? const Icon(Icons.done, color: Colors.white,): null,
+                              backgroundColor: index == 0 ? primaryClr :
+                                  index == 1 ? orangeClr : pinkClr ,
+                            ),
+                          ),
+                        ), ),
+                      ),
+                  ],
+                );
   }
 }
