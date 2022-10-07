@@ -107,7 +107,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
             InputField(
               title: 'Repeat',
-              hintText: 'None',
+              hintText: 'None ',
             ),
           ],
         ),
