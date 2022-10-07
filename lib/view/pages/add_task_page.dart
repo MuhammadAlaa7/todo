@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo/controllers/task_controller.dart';
+import 'package:todo/view/widgets/button.dart';
 import 'package:todo/view/widgets/input_field.dart';
 import 'package:intl/intl.dart';
 import '../theme.dart';
@@ -25,11 +26,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final String endTime = DateFormat('hh:mm a')
       .format(DateTime.now().add(const Duration(hours: 1)));
   int selectedReminder = 5;
-
+  String selectedRepeat = 'None';
 
   // format the now but added 1 hour on it
   List<int> reminderList = [5, 10, 15, 20, 25, 30];
-
+ List<String> repeatList = [ 'None', 'Daily', 'Weekly' , 'monthly'];
+ int selectedColor = 0;
   @override
   Widget build(BuildContext context) {
     // Get.put(TaskController());
@@ -90,6 +92,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 title: 'Reminder',
                 hintText: '$selectedReminder  minutes earlier',
                 widget: DropdownButton(
+
+                  underline: Container(height: 0, width:  0 ,),
+                  icon: const Icon(Icons.keyboard_arrow_down, size: 30,),
+
                   value: selectedReminder ,
                   items: reminderList.map<DropdownMenuItem<int>>(
                         (item) => DropdownMenuItem<int>(
@@ -99,16 +105,71 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       ).toList(),
                   onChanged: ( newValue) {
                     setState(() {
-                      selectedReminder = int.parse(newValue.toString()) ; 
+                      selectedReminder = int.parse(newValue.toString()) ;
                     });
                   },
                 ),
               ),
-
             InputField(
               title: 'Repeat',
-              hintText: 'None ',
+              hintText: selectedRepeat ,
+              widget: DropdownButton(
+
+                underline: Container(height: 0, width:  0 ,),
+                icon: const Icon(Icons.keyboard_arrow_down, size: 30,),
+
+                value: selectedRepeat ,
+                items: repeatList.map(
+                      (item) => DropdownMenuItem(
+                    child: Text(item),
+                    value: item ,
+                  ),
+                ).toList(),
+                onChanged: ( newValue) {
+                  setState(() {
+                    selectedRepeat = newValue.toString();
+                  });
+                },
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0 ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      Text('Color', style: titleStyle,),
+                        Row(
+                          children: List.generate(3, (index) =>  InkWell(
+                            onTap: (){
+                                 setState(() {
+                                   selectedColor = index ;
+                                 });
+
+                            },
+                            child:  Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: CircleAvatar(
+                                maxRadius: 18,
+                                child: index == selectedColor ? const Icon(Icons.done, color: Colors.white,): null,
+                                backgroundColor: index == 0 ? primaryClr :
+                                    index == 1 ? orangeClr : pinkClr ,
+                              ),
+                            ),
+                          ), ),
+                        ),
+                    ],
+                  ),
+                  MyButton(label: 'Add Task ', onTap: (){}),
+                ],
+              ),
+            ),
+
+
+
           ],
         ),
       ),
