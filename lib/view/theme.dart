@@ -13,19 +13,27 @@ const Color darkHeaderClr = Color(0xFF424242);
 class Themes {
 
   static final light = ThemeData(
-    primaryColor: primaryClr,
-    backgroundColor: primaryClr,
+      primaryColor: primaryClr,
+      backgroundColor: primaryClr,
+      brightness: Brightness.light,
+      appBarTheme:  const AppBarTheme(
+       color: primaryClr,
+    ),
 
-    brightness: Brightness.light
+
   );
 
   static final dark = ThemeData(
-    primaryColor: darkGreyClr,
-    backgroundColor: darkGreyClr,
-    brightness: Brightness.dark
-  );
+      primaryColor: darkGreyClr,
+      backgroundColor: darkGreyClr,
+      brightness: Brightness.dark,
+      appBarTheme:  const AppBarTheme(
+    color: darkHeaderClr,
 
-  TextStyle get headline {
+  ),
+  );
+}
+  TextStyle get headlineTheme {
     return GoogleFonts.lato(
       textStyle:   TextStyle(
         fontSize: 24,
@@ -44,7 +52,7 @@ class Themes {
       ),
     );
   }
-  TextStyle get title {
+  TextStyle get titleStyle {
     return GoogleFonts.lato(
       textStyle: TextStyle(
         fontSize: 18,
@@ -85,4 +93,3 @@ class Themes {
     );
   }
 
-}

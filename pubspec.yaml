@@ -13,6 +13,7 @@ dependencies:
   get:
   get_storage:
   google_fonts:
+  intl:
   flutter:
     sdk: flutter
 

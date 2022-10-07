@@ -1,18 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo/controllers/task_controller.dart';
+import 'package:todo/view/widgets/input_field.dart';
+import 'package:intl/intl.dart';
+import '../theme.dart';
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({Key? key}) : super(key: key);
+  AddTaskPage({Key? key}) : super(key: key);
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TextEditingController titleController = TextEditingController();
+
+  final TextEditingController noteController = TextEditingController();
+
+  final DateTime selectedDate = DateTime.now();
+
+  final String startTime =
+      DateFormat('hh:mm a').format(DateTime.now()).toString();
+
+  final String endTime = DateFormat('hh:mm a')
+      .format(DateTime.now().add(const Duration(hours: 1)));
+  int selectedReminder = 5;
+
+
+  // format the now but added 1 hour on it
+  List<int> reminderList = [5, 10, 15, 20, 25, 30];
+
   @override
   Widget build(BuildContext context) {
+    // Get.put(TaskController());
+    // final state = Get.find();
     return Scaffold(
       appBar: AppBar(),
-      body: Container(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              'Add Task',
+              style: headlineTheme,
+            ),
+            InputField(
+              title: 'Title',
+              hintText: 'Enter the title here ',
+              controller: titleController,
+            ),
+            InputField(
+              title: 'Note',
+              hintText: 'Enter the note here ',
+              controller: noteController,
+            ),
+            InputField(
+              title: 'Date',
+              hintText: DateFormat.yMd().format(selectedDate),
+              // the format returns a string
+              widget: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.calendar_today_outlined,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: InputField(
+                    title: 'Start Time',
+                    hintText: startTime,
+                    widget: const Icon(
+                      Icons.access_time_rounded,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InputField(
+                    title: 'End Time',
+                    hintText: endTime,
+                    widget: const Icon(
+                      Icons.watch_later_outlined,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            InputField(
+                title: 'Reminder',
+                hintText: '$selectedReminder  minutes earlier',
+                widget: DropdownButton(
+                  value: selectedReminder ,
+                  items: reminderList.map<DropdownMenuItem<int>>(
+                        (item) => DropdownMenuItem<int>(
+                          child: Text(item.toString()),
+                          value: item ,
+                        ),
+                      ).toList(),
+                  onChanged: ( newValue) {
+                    setState(() {
+                      selectedReminder = int.parse(newValue.toString()) ; 
+                    });
+                  },
+                ),
+              ),
+
+            InputField(
+              title: 'Repeat',
+              hintText: 'None',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
