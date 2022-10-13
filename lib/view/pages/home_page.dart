@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           addTask(),
           addDate(),
-          taskTile(),
+          showTasks(),
         ],
       ),
     );
@@ -176,21 +176,28 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  taskTile() {
-    return GestureDetector(
-      onTap: () {
-        showBottomSheet(context, Task(
-          isCompleted: 1,
-        ) ,
-        );
+  showTasks() {
 
-      },
-      child: TaskTile(
-        Task(
-            // color: 2,
-            ),
-      ),
+    return Expanded(
+      child: ListView.builder(
+          itemBuilder: ( context , index )
+          {
+            Task task = TaskController().tasksList[index];  // each item is an object of Task
+                return   GestureDetector(
+                  onTap: () {
+                    showBottomSheet(context, task);
+
+                  },
+                  child: TaskTile(task ),
+                );
+          },
+          itemCount: TaskController().tasksList.length,
+          ),
     );
+
+
+
+
   }
 
   showBottomSheet(BuildContext context, Task task) {

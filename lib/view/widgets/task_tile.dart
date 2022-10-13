@@ -6,7 +6,7 @@ import '../../models/task.dart';
 class TaskTile extends StatelessWidget {
   const TaskTile(this.task, {Key? key}) : super(key: key);
 
-  final Task task;
+  final Task task; // <<<<<<<<<<<<<<<<<<<<<<<,,, use it
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class TaskTile extends StatelessWidget {
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: backgroundColor(1),
+        color: backgroundColor(task.color),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -25,7 +25,7 @@ class TaskTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Title' , style: titleStyle,),
+                Text(task.title ?? "null" , style: titleStyle,),
                 const SizedBox(
                   height: 10,
                 ),
@@ -33,25 +33,25 @@ class TaskTile extends StatelessWidget {
                   children:  [
                     const Icon(Icons.access_time_rounded , color: Colors.grey,),
                     const SizedBox(width: 8,),
-                    Text('8:10', style: bodyText,),
+                    Text( task.startTime ?? 'null', style: bodyText,),
                     const SizedBox(width: 8,),
-                    Text('8:10', style: bodyText,),
+                    Text(task.endTime ?? 'null', style: bodyText,),
 
                   ],
                 ),
                 Container(
               padding: const EdgeInsets.only(top: 10),
                   child:
-                  const Text('note something new in you file sfadsf sadfdsaf asfdsaf asfdsaf asfd saf sadfsadfsaf as fdsa fdsa fsaf sfs'),
+                   Text(task.note ?? 'null'),
                 ),
               ],
             ),
           ),
-          const RotatedBox(
+           RotatedBox(
             quarterTurns: 1,
             child: Text(
-              'TODO',
-              style: TextStyle(
+               task.isCompleted == 0 ? 'TODO' : 'Completed',
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class TaskTile extends StatelessWidget {
       case 2:
         return pinkClr;
       default:
-        return primaryClr;
+        return Colors.red;
     }
   }
 }
