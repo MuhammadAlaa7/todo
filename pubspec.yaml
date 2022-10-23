@@ -16,6 +16,7 @@ dependencies:
   intl:
   date_picker_timeline: ^1.2.3
   flutter_svg:
+  flutter_staggered_animations: ^1.0.0
   flutter:
     sdk: flutter
 
@@ -24,6 +25,7 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons:
   flutter_lints:
+  sqflite:
 
 flutter_icons:
   android: true

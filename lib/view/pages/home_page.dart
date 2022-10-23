@@ -1,5 +1,6 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,10 +24,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
   DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
@@ -37,9 +41,9 @@ class _HomePageState extends State<HomePage> {
               //TODO: HANDLE THIS FUCKING THINGGGGGGGGGGGGGGGG
             });
           },
-          icon: Icon(
-            Get.isDarkMode ? Icons.wb_sunny_sharp : Icons.nightlight_round,
-          ),
+          icon: Get.isDarkMode ?Icon(
+             Icons.wb_sunny_sharp  ,
+          ) : Icon(Icons.nightlight_round),
         ),
         actions: const [
           CircleAvatar(
@@ -85,11 +89,19 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           ),
-          MyButton(
-            label: 'Add Task',
-            onTap: () {
-              Get.to(const AddTaskPage());
-            },
+          AnimationConfiguration.synchronized(
+            duration: const Duration(milliseconds: 500),
+            child: SlideAnimation(
+
+              horizontalOffset: 300,
+              child: MyButton(
+                label: 'Add Task',
+                onTap: () {
+                 // Get.to(const AddTaskPage());
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const AddTaskPage()));
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -177,27 +189,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   showTasks() {
-
     return Expanded(
-      child: ListView.builder(
-          itemBuilder: ( context , index )
-          {
-            Task task = TaskController().tasksList[index];  // each item is an object of Task
-                return   GestureDetector(
-                  onTap: () {
-                    showBottomSheet(context, task);
-
-                  },
-                  child: TaskTile(task ),
-                );
-          },
+      child:  ListView.builder(
           itemCount: TaskController().tasksList.length,
-          ),
+          itemBuilder: (BuildContext context, int index) {
+            var task = TaskController().tasksList[index];
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 1500),
+            child: SlideAnimation(
+             // verticalOffset: 500.0,
+              horizontalOffset: 300,   //  >>>>>>>>>>>  how much far from the left side of the screen
+              child: FadeInAnimation(
+                child:  GestureDetector(
+                  onTap: () {
+                    showBottomSheet(context,  task);
+                  },
+                  child: TaskTile(
+                    task ,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
-
-
-
-
   }
 
   showBottomSheet(BuildContext context, Task task) {
@@ -243,10 +260,8 @@ class _HomePageState extends State<HomePage> {
                 color: primaryClr,
               ),
               Divider(
-                color: Get.isDarkMode?  Colors.grey : Colors.black,
-
+                color: Get.isDarkMode ? Colors.grey : Colors.black,
                 thickness: 2,
-
               ),
               bottomSheetItem(
                 label: 'Cancel',
@@ -274,7 +289,8 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         alignment: Alignment.center,
         margin: const EdgeInsets.symmetric(vertical: 4),
-        width: MediaQuery.of(context).size.width * 0.9,   // this is the padding left in the bottom sheet
+        width: MediaQuery.of(context).size.width * 0.9,
+        // this is the padding left in the bottom sheet
         height: 65,
         decoration: BoxDecoration(
           border: Border.all(
@@ -301,4 +317,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
+
+
 }

@@ -4,6 +4,7 @@ import 'package:todo/controllers/task_controller.dart';
 import 'package:todo/view/widgets/button.dart';
 import 'package:todo/view/widgets/input_field.dart';
 import 'package:intl/intl.dart';
+import '../../models/task.dart';
 import '../theme.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -14,16 +15,16 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  TaskController _taskController = Get.find();
   final TextEditingController titleController = TextEditingController();
 
   final TextEditingController noteController = TextEditingController();
 
-  final DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
 
-  final String startTime =
-      DateFormat('hh:mm a').format(DateTime.now()).toString();
+   String startTime = DateFormat('hh:mm a').format(DateTime.now()).toString();
 
-  final String endTime = DateFormat('hh:mm a')
+   String endTime = DateFormat('hh:mm a')
       .format(DateTime.now().add(const Duration(hours: 1)));
   int selectedReminder = 5;
   String selectedRepeat = 'None';
@@ -35,12 +36,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get.put(TaskController());
-    // final state = Get.find();
+    //  Get.put(TaskController());
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon:  const Icon(Icons.arrow_back_ios) ,
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Get.back(),
         ),
       ),
@@ -66,7 +67,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
               hintText: DateFormat.yMd().format(selectedDate),
               // the format returns a string
               widget: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDate();
+                },
                 icon: const Icon(
                   Icons.calendar_today_outlined,
                 ),
@@ -78,8 +81,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   child: InputField(
                     title: 'Start Time',
                     hintText: startTime,
-                    widget: const Icon(
-                      Icons.access_time_rounded,
+                    widget: IconButton(
+                      onPressed: () {
+                        showTime(
+                          isStart: true,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.access_time_rounded,
+                      ),
                     ),
                   ),
                 ),
@@ -87,8 +97,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   child: InputField(
                     title: 'End Time',
                     hintText: endTime,
-                    widget: const Icon(
-                      Icons.watch_later_outlined,
+                    widget: IconButton(
+                      onPressed: () {
+                        showTime(
+                          isStart: false,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.watch_later_outlined,
+                      ),
                     ),
                   ),
                 ),
@@ -171,7 +188,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   MyButton(
                       label: 'Add Task ',
                       onTap: () {
-                        Get.back();
+                        validateData();
                       }),
                 ],
               ),
@@ -221,5 +238,83 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ],
     );
+  }
+
+  validateData() {
+    if (titleController.text.isNotEmpty || noteController.text.isNotEmpty) {
+      addTasksToDB();
+    } else if (titleController.text.isEmpty || noteController.text.isEmpty) {
+      Get.snackbar(
+        'required',
+        'All fields must be filled',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: white,
+        colorText: pinkClr,
+        icon: const Icon(
+          Icons.warning_amber_outlined,
+          color: Colors.red,
+        ),
+      );
+    }
+  }
+
+  addTasksToDB() async {
+    int value = await _taskController.addTask(
+      task: Task(
+        title: titleController.text,
+        note: noteController.text,
+        date: DateFormat.yMd().format(selectedDate),
+        startTime: startTime,
+        endTime: endTime,
+        remind: selectedReminder,
+        repeat: selectedRepeat,
+        isCompleted: 1,
+        color: 1,
+        id: 1,
+      ),
+    );
+    print(value); // this represents the id of the task
+  }
+
+  void showDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      initialDatePickerMode: DatePickerMode.day,
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2040),
+    );
+
+    if (pickedDate != null) setState(() => selectedDate = pickedDate);
+  }
+
+  void showTime({required bool isStart}) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: isStart
+          ? TimeOfDay.fromDateTime(DateTime.now())
+          : TimeOfDay.fromDateTime(
+              DateTime.now().add(
+                const Duration(minutes: 30),
+              ),
+            ),
+    );
+   if(pickedTime != null )
+     {
+       if(isStart == true ) 
+         {
+           setState(() {
+             startTime =  pickedTime.format(context);
+           });
+         }
+       else
+       {
+         setState(() {
+           endTime =  pickedTime.format(context);
+         });
+       }
+
+     }
+     
   }
 }

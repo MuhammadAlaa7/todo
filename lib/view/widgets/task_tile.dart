@@ -12,14 +12,15 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 400,
-      margin: const EdgeInsets.all(20),
+      // there is no height so that the container shrinks according to its content
+      margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: backgroundColor(task.color),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(  // expanded so that the column take the rest from the row
             child: Column(
@@ -33,21 +34,26 @@ class TaskTile extends StatelessWidget {
                   children:  [
                     const Icon(Icons.access_time_rounded , color: Colors.grey,),
                     const SizedBox(width: 8,),
-                    Text( task.startTime ?? 'null', style: bodyText,),
-                    const SizedBox(width: 8,),
-                    Text(task.endTime ?? 'null', style: bodyText,),
+                    Text('${task.startTime} - ${task.endTime}' , style: bodyText2,)
 
                   ],
                 ),
                 Container(
               padding: const EdgeInsets.only(top: 10),
                   child:
-                   Text(task.note ?? 'null'),
+                   Text(task.note ?? 'null'  , style: subTitle,),
                 ),
               ],
             ),
           ),
+           Container(
+             width: 1,
+             height: 60,
+             color: Colors.grey,
+           ),
+           const SizedBox(width: 3,),
            RotatedBox(
+
             quarterTurns: 1,
             child: Text(
                task.isCompleted == 0 ? 'TODO' : 'Completed',
